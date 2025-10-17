@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "com.h": "c",
+        "can_busoff.h": "c",
+        "can_if.h": "c",
+        "string.h": "c",
+        "*.rh": "c",
+        "type_traits": "c",
+        "can_fifo.h": "c"
+    }
+}

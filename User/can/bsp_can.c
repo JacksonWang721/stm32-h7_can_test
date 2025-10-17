@@ -196,6 +196,33 @@ void CAN_SetMsg(void)
   HAL_FDCAN_EnableTxBufferRequest(&hfdcan, FDCAN_TX_BUFFER0);	 
 }
 
+/*
+*********************************************************************************************************
+*    函 数 名: HAL_FDCAN_RxFifo0Callback
+*    功能说明: CAN中断服务程序-回调函数
+*    形    参: hfdcan
+*    返 回 值: 无
+*********************************************************************************************************
+*/
+FDCAN_RxHeaderTypeDef g_Can1RxHeader;
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+  if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_WATERMARK) != RESET)
+  {
+      /* Retreive Rx messages from RX FIFO0 */
+      HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &g_Can1RxHeader, g_Can1RxData);
+
+      /* Activate Rx FIFO 0 watermark notification */
+      HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_WATERMARK, 0);
+
+      // if (g_Can1RxHeader.Identifier == 0x111 && g_Can1RxHeader.IdType == FDCAN_STANDARD_ID)
+      // {
+          //bsp_PutMsg(MSG_CAN1_RX, 0); /* 发消息收到数据包，结果在g_Can1RxHeader， g_Can1RxData */
+          can_if_receive_indication(g_Can1RxHeader.identifier, g_Can1RxData, g_Can1RxHeader.DataLength);
+      //}
+  }
+}
+
 
 
 /**************************END OF FILE************************************/
